@@ -8,12 +8,17 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtUtils {
 
     @Value("${JWT.KEY}")
     private String secretKey;
+
+    @Value("${JWT.EXPIRE-TIME-MINUTES}")
+    private int expireTimeInMinutes;
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
@@ -30,6 +35,27 @@ public class JwtUtils {
 
     public String getUserName(String jwt) {
         return getAllClaims(jwt).getSubject();
+    }
+
+    public String generateJWT(String userName) {
+        Map<String, Object> claims = new HashMap<>();
+        return getJwt(
+                userName,
+                claims
+        );
+    }
+
+    private String getJwt(String subject, Map<String, Object> claims) {
+        return Jwts
+                .builder()
+                .subject(subject)
+                .claims(claims)
+                .header().empty().add("typ", "JWT")
+                .and()
+                .signWith(getSigningKey())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + (1000L * 60 * expireTimeInMinutes)))
+                .compact();
     }
 
     private Claims getAllClaims(String jwt) {

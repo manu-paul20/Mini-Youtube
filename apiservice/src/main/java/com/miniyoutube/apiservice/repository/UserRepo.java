@@ -1,6 +1,7 @@
 package com.miniyoutube.apiservice.repository;
 
 import com.miniyoutube.apiservice.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -11,6 +12,7 @@ import java.util.List;
 @Repository
 public class UserRepo {
 
+    @Autowired
     UserRepo(MongoTemplate mongoTemplate){
         this.mongoTemplate = mongoTemplate;
     }
