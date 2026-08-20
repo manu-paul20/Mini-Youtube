@@ -21,20 +21,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SpringSecurity {
 
+    private final UserDetailsService userDetailsService;
+    private final JwtFilter jwtFilter;
     @Autowired
     SpringSecurity(UserDetailServiceImpl userDetailsService, JwtFilter jwtFilter) {
         this.userDetailsService = userDetailsService;
         this.jwtFilter = jwtFilter;
     }
-    private final UserDetailsService userDetailsService;
-    private final JwtFilter jwtFilter;
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
         return httpSecurity.authorizeHttpRequests(request ->
                         request
                                 .requestMatchers("/public/**").permitAll()
+                                .requestMatchers("/videos/**").authenticated()
                                 .anyRequest().permitAll()
 
                 )
@@ -52,7 +52,7 @@ public class SpringSecurity {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration){
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) {
         return authenticationConfiguration.getAuthenticationManager();
     }
 

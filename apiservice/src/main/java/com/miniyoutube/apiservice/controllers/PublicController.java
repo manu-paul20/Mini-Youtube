@@ -43,7 +43,7 @@ public class PublicController {
             if (user.getUserName() == null || user.getPassword() == null) {
                 return new ResponseEntity<>("Username and password cannot be null", HttpStatus.BAD_REQUEST);
             }
-            userService.saveUser(user);
+            userService.saveNewUser(user);
             log.info("User created with name = {}", user.getUserName());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (UserAlreadyExistsException ex) {
@@ -56,7 +56,6 @@ public class PublicController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserDto userDto) {
         try {
-            log.info(userDto.toString());
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDto.getUserName(), userDto.getPassword()));
             String jwt = jwtUtils.generateJWT(userDto.getUserName());
             return new ResponseEntity<>(jwt, HttpStatus.OK);

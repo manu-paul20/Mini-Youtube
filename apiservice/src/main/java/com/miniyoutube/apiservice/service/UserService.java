@@ -20,7 +20,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void saveUser(UserDto user) throws UserAlreadyExistsException {
+    public void saveNewUser(UserDto user) throws UserAlreadyExistsException {
         if (userRepo.findUser(user.getUserName()) == null) {
             User newUser = User.builder()
                     .userName(user.getUserName())
@@ -31,5 +31,13 @@ public class UserService {
         } else {
             throw new UserAlreadyExistsException();
         }
+    }
+
+    public void updateUser(User user){
+        userRepo.save(user);
+    }
+
+    public User getUser(String userName){
+        return userRepo.findUser(userName);
     }
 }
