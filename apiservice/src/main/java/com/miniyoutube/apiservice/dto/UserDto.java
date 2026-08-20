@@ -11,10 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserDto {
     @NotEmpty
-    @JsonProperty("userName")
-    String userName;
+  private   String userName;
 
     @NotEmpty
-    @JsonProperty("password")
-    String password;
+  private   String password;
 }
