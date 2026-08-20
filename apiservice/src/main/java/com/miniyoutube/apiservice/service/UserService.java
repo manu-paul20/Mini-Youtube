@@ -2,6 +2,7 @@ package com.miniyoutube.apiservice.service;
 
 import com.miniyoutube.apiservice.dto.UserDto;
 import com.miniyoutube.apiservice.entity.User;
+import com.miniyoutube.apiservice.entity.Video;
 import com.miniyoutube.apiservice.exceptions.UserAlreadyExistsException;
 import com.miniyoutube.apiservice.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -20,7 +22,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void saveUser(UserDto user) throws UserAlreadyExistsException {
+    public void saveNewUser(UserDto user) throws UserAlreadyExistsException {
         if (userRepo.findUser(user.getUserName()) == null) {
             User newUser = User.builder()
                     .userName(user.getUserName())
@@ -32,4 +34,13 @@ public class UserService {
             throw new UserAlreadyExistsException();
         }
     }
+
+    public void updateUser(User user){
+        userRepo.save(user);
+    }
+
+    public User getUser(String userName){
+        return userRepo.findUser(userName);
+    }
+
 }
