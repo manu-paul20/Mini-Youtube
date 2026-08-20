@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -60,5 +61,8 @@ public class VideoService {
         }
     }
 
+    public List<Video> getAllVideos(String userName){
+        return userService.getUser(userName).getVideos();
+    }
 
 }
