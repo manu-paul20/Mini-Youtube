@@ -19,12 +19,8 @@ public class KafkaService {
     }
 
     public void send(KafkaData data) {
-        kafkaTemplate.send("miniYtTopic", data);
+        kafkaTemplate.send("miniytTopic", data);
     }
 
-    @KafkaListener(groupId = "data-group", topics = "miniYtTopic")
-    public void consume(KafkaData data) {
-        log.info("Consumed data for id -> {},path-> {}",data.getVideoId(),data.getPath());
-    }
 
 }
