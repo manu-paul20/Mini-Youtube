@@ -1,16 +1,20 @@
 package com.miniyoutube.apiservice.service;
 
 import com.miniyoutube.apiservice.entity.KafkaData;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class KafkaService {
 
-    private final KafkaTemplate<String, KafkaData> kafkaTemplate;
+    private final KafkaTemplate kafkaTemplate;
 
-    KafkaService(KafkaTemplate<String, KafkaData> kafkaTemplate) {
+    @Autowired
+    KafkaService(KafkaTemplate kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
@@ -18,9 +22,9 @@ public class KafkaService {
         kafkaTemplate.send("miniYtTopic", data);
     }
 
-    @KafkaListener(groupId = "")
-    public void consume(){
-
+    @KafkaListener(groupId = "data-group", topics = "miniYtTopic")
+    public void consume(KafkaData data) {
+        log.info("Consumed data for id -> {},path-> {}",data.getVideoId(),data.getPath());
     }
 
 }

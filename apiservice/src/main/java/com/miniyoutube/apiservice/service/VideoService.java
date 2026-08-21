@@ -1,10 +1,13 @@
 package com.miniyoutube.apiservice.service;
 
+import com.miniyoutube.apiservice.entity.KafkaData;
 import com.miniyoutube.apiservice.entity.User;
 import com.miniyoutube.apiservice.entity.Video;
 import com.miniyoutube.apiservice.enums.VideoStatus;
 import com.miniyoutube.apiservice.repository.VideoRepo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,9 +26,12 @@ public class VideoService {
 
     private UserService userService;
     private VideoRepo videoRepo;
-    public VideoService(UserService userService, VideoRepo videoRepo) {
+    private KafkaService kafkaService;
+
+    public VideoService(UserService userService, VideoRepo videoRepo, KafkaService kafkaService) {
         this.userService = userService;
         this.videoRepo = videoRepo;
+        this.kafkaService = kafkaService;
     }
 
     @Transactional
@@ -55,13 +61,19 @@ public class VideoService {
             User user = userService.getUser(userName);
             user.getVideos().add(video);
             userService.updateUser(user);
+            kafkaService.send(
+                    KafkaData.builder()
+                            .videoId(video.getId())
+                            .path(targetDir.toString())
+                            .build()
+            );
         } catch (Exception e) {
             log.error("Error while uploading video -> ", e);
             throw new Exception();
         }
     }
 
-    public List<Video> getAllVideos(String userName){
+    public List<Video> getAllVideos(String userName) {
         return userService.getUser(userName).getVideos();
     }
 

@@ -56,6 +56,7 @@ public class PublicController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserDto userDto) {
         try {
+            log.info(userDto.toString());
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDto.getUserName(), userDto.getPassword()));
             String jwt = jwtUtils.generateJWT(userDto.getUserName());
             return new ResponseEntity<>(jwt, HttpStatus.OK);
